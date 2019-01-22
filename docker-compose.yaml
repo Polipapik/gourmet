@@ -1,0 +1,29 @@
+version: '2.1'
+services:
+
+  purchase-db:
+    image: purchase-db:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 2s
+      retries: 20
+    container_name: purchase-db
+
+  svc-receiver:
+    image: svc-receiver:latest
+    environment:
+    - COUNTRY_RECEIVER_ADDRESS=:9091
+    env_file:
+    - ./config/docker/purchase-db.env
+    ports:
+    - 9091:9091
+    depends_on:
+      purchase-db:
+        condition: service_healthy
+    container_name: svc-receiver
