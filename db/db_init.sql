@@ -36,12 +36,88 @@ CREATE TABLE db_conversion_lock (c INTEGER);
 
 
 
+-- TODO : Products table, Locations table, remake DB to add that
+CREATE TABLE currency (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(256) NOT NULL,
+    code VARCHAR(16) NOT NULL
+);
 
+CREATE TABLE rates_of_exchange (
+    id SERIAL PRIMARY KEY,
+    from_id INTEGER NOT NULL,
+    to_id INTEGER NOT NULL,
+    price DECIMAL NOT NULL,
+    FOREIGN KEY (from_id) REFERENCES currency(id),
+    FOREIGN KEY (to_id) REFERENCES currency(id)
+);
 
+CREATE TABLE locations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(256) NOT NULL,
+    description TEXT NOT NULL,
+    currency_id INTEGER NOT NULL,
+    status BOOLEAN NOT NULL,
+    FOREIGN KEY (currency_id) REFERENCES currency(id)
+);
 
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(256) NOT NULL,
+    description TEXT NOT NULL
+);
 
+CREATE TABLE prices (
+    id SERIAL PRIMARY KEY,
+    product_id INTEGER NOT NULL,
+    location_id INTEGER NOT NULL,
+    price DECIMAL NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (location_id) REFERENCES locations(id)
+);
 
+CREATE TABLE positions (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(256) NOT NULL,
+    description TEXT NOT NULL
+);
 
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(256) NOT NULL,
+    last_name VARCHAR(256) NOT NULL,
+    position_id INTEGER NOT NULL,
+    location_id INTEGER NOT NULL,
+    FOREIGN KEY (position_id) REFERENCES positions(id),
+    FOREIGN KEY (location_id) REFERENCES locations(id)
+);
+
+CREATE TABLE methods (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(256) NOT NULL
+);
+
+-- TODO: change datetime type
+CREATE TABLE purchases (
+    id SERIAL PRIMARY KEY,
+    employee_id INTEGER NOT NULL,
+    location_id INTEGER NOT NULL,
+    method_id INTEGER NOT NULL,
+    datetime VARCHAR(256) NOT NULL,
+    FOREIGN KEY (employee_id) REFERENCES employees(id),
+    FOREIGN KEY (location_id) REFERENCES locations(id),
+    FOREIGN KEY (method_id) REFERENCES methods(id)
+);
+
+CREATE TABLE purchases_keks (
+    id SERIAL PRIMARY KEY,
+    purchase_id INTEGER NOT NULL,
+    price_id INTEGER NOT NULL,
+    amount FLOAT NOT NULL,
+    price DECIMAL NOT NULL,
+    result DECIMAL NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchases(id)
+);
 
 
 
@@ -49,3 +125,5 @@ CREATE TABLE db_conversion_lock (c INTEGER);
 
 -- remove lock that prevents concurrent db conversion; must be the last thing we do here
 DROP TABLE db_conversion_lock;
+
+-- SELECT * FROM test_tables
