@@ -120,10 +120,12 @@ CREATE TABLE purchases_keks (
 );
 
 
-
+INSERT INTO products(name, description) VALUES
+    ('Имя продукта1', 'Описание продукта1'),
+    ('Имя продукта1', 'Описание продукта2');
 
 
 -- remove lock that prevents concurrent db conversion; must be the last thing we do here
 DROP TABLE db_conversion_lock;
 
--- SELECT * FROM test_tables
+SELECT * FROM products

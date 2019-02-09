@@ -1,8 +1,8 @@
 version: '2.1'
 services:
 
-  purchase-db:
-    image: purchase-db:latest
+  gourmet-db:
+    image: gourmet-db:latest
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -13,17 +13,17 @@ services:
       interval: 3s
       timeout: 2s
       retries: 20
-    container_name: purchase-db
+    container_name: gourmet-db
 
   svc-receiver:
     image: svc-receiver:latest
     environment:
-    - COUNTRY_RECEIVER_ADDRESS=:9091
+    - RECEIVER_SERVICE_ADDRESS=:9091
     env_file:
-    - ./config/docker/purchase-db.env
+    - ./config/docker/gourmet-db.env
     ports:
     - 9091:9091
     depends_on:
-      purchase-db:
+      gourmet-db:
         condition: service_healthy
     container_name: svc-receiver

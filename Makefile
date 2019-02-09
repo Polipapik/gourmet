@@ -1,7 +1,7 @@
 build:
 		GOOS=linux GOARCH=amd64 go build -o ./api/svc-receiver/svc-receiver -i ./api/svc-receiver/*.go
 		docker build -t svc-receiver ./api/svc-receiver
-		docker build -t purchase-db ./db
+		docker build -t gourmet-db ./db
 		rm ./api/svc-receiver/svc-receiver
 
 unfail:
@@ -14,7 +14,12 @@ down:
 		docker-compose down
 
 clean:
-		docker rm svc-receiver purchase-db
+		docker rm svc-receiver gourmet-db
+
+re:
+		make down
+		make build
+		make run
 
 # ifndef $(GOPATH)
 #     GOPATH=$(shell go env GOPATH)
